@@ -1,0 +1,29 @@
+---
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const links = [
+  { href: base, label: 'Home', path: '/' },
+  { href: `${base}projects/`, label: 'Projects', path: '/projects/' },
+  { href: `${base}about/`, label: 'About', path: '/about/' },
+];
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href={base} aria-label="Triston Wilson home">
+      <span class="brand-mark">[ T / W ]</span>
+      <span class="brand-name">Triston Wilson</span>
+    </a>
+    <div class="header-right">
+      <nav class="nav" aria-label="Main navigation">
+        {links.map((link) => (
+          <a href={link.href} aria-current={currentPath === link.path ? 'page' : undefined}>{link.label}</a>
+        ))}
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark mode">Dark mode</button>
+    </div>
+  </div>
+</header>

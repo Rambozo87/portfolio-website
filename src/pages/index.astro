@@ -1,0 +1,33 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
+<SiteLayout title="Home" description="The personal portfolio of Triston Wilson, a computer engineering student." currentPath="/">
+  <section class="intro">
+    <p class="eyebrow">Computer engineering <span class="slash">/</span> University of Utah</p>
+    <h1>Triston Wilson<span class="title-cursor" aria-hidden="true">_</span></h1>
+    <p class="lead">I'm a computer engineering student interested in the boundary between hardware and software.</p>
+    <p class="intro-copy">I enjoy working close to the machine: digital logic, computer architecture, graphics, and the systems that make computers work. I use Linux daily and prefer tools that make the underlying details visible.</p>
+    <div class="intro-links">
+      <a href={`${base}about/`}>More about me <span aria-hidden="true">↗</span></a>
+      <a href={`${base}projects/`}>Explore my work <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="section-head"><span class="section-id">01</span><h2>Background</h2></div>
+    <div class="section-body">
+      <p>I'm studying computer engineering at the University of Utah, with an interest in both the physical implementation of computing and the software built on top of it.</p>
+      <p>My work ranges from digital hardware and low-level programming to graphics and systems experimentation.</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="section-head"><span class="section-id">02</span><h2>Current interests</h2></div>
+    <div class="section-body">
+      <p>Computer architecture, embedded systems, graphics pipelines, Linux tooling, and understanding how abstractions behave when you look underneath them.</p>
+      <div class="term-list"><span>hardware</span><span>systems</span><span>graphics</span><span>linux</span></div>
+    </div>
+  </section>
+</SiteLayout>

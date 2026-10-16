@@ -1,0 +1,24 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { loadProjects } from '../../lib/projects';
+
+const projects = loadProjects();
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
+<SiteLayout title="Projects" description="Technical projects and experiments by Triston Wilson." currentPath="/projects/">
+  <section class="page-intro">
+    <p class="eyebrow">Index <span class="slash">/</span> Work</p>
+    <h1>Projects<span class="title-cursor" aria-hidden="true">_</span></h1>
+    <p>Technical work, experiments, and longer-term projects, discovered from the separate portfolio repository at build time.</p>
+  </section>
+  <section class="project-list" aria-label="Project index">
+    {projects.map((project, index) => (
+      <a class="project-row" href={`${base}projects/${project.slug}/`}>
+        <span class="row-num">{String(index + 1).padStart(2, '0')}</span>
+        <div><h2>{project.metadata.title} <span class="arrow" aria-hidden="true">↗</span></h2><p>{project.metadata.description}</p></div>
+        <div class="row-tags">{project.metadata.tags.join(' / ')}</div>
+      </a>
+    ))}
+    {projects.length === 0 && <p class="notice">No projects have been published yet.</p>}
+  </section>
+</SiteLayout>

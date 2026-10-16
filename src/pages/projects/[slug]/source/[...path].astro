@@ -1,0 +1,40 @@
+---
+import SiteLayout from '../../../../layouts/SiteLayout.astro';
+import { loadProjects } from '../../../../lib/projects';
+import { highlightSource } from '../../../../lib/highlight';
+
+export async function getStaticPaths() {
+  const projects = loadProjects();
+  return (await Promise.all(projects.flatMap((project) => project.sourceFiles.map(async (file) => ({
+    params: { slug: project.slug, path: file.relativePath },
+    props: { project, file, highlighted: await highlightSource(file) },
+  }))))).flat();
+}
+
+const { project, file, highlighted } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const projectUrl = `${base}projects/${project.slug}/`;
+const githubUrl = `https://github.com/Rambozo87/portfolio/blob/main/projects/${project.slug}/${file.relativePath.split('/').map(encodeURIComponent).join('/')}`;
+---
+<SiteLayout title={`${file.relativePath} | ${project.metadata.title}`} description={`Source file ${file.relativePath} from ${project.metadata.title}.`} currentPath="/projects/">
+  <article class="article source-article">
+    <p class="eyebrow">Source <span class="slash">/</span> {project.slug}</p>
+    <h1>{file.relativePath}<span class="title-cursor" aria-hidden="true">_</span></h1>
+    <p class="article-lead">Read-only generated source view. This file is displayed as text and is never executed.</p>
+    <div class="source-actions">
+      <a href={projectUrl}>← Back to project</a>
+      <a href={githubUrl} rel="noreferrer">View on GitHub ↗</a>
+    </div>
+    <nav class="file-index source-file-index" aria-label="Project source files">
+      <span class="file-index-label">Files</span>
+      {project.sourceFiles.map((sourceFile) => (
+        <a href={`${base}projects/${project.slug}/source/${sourceFile.relativePath.split('/').map(encodeURIComponent).join('/')}`} aria-current={sourceFile.relativePath === file.relativePath ? 'page' : undefined}>{sourceFile.relativePath}</a>
+      ))}
+    </nav>
+    <section class="code-panel" aria-label={`Source code for ${file.relativePath}`}>
+      <div class="code-panel-header"><span>{file.relativePath}</span><span>{file.language}</span></div>
+      <div class="code-panel-body" set:html={highlighted} />
+      <div class="code-panel-footer">{file.code.split('\n').length} lines / UTF-8 / read-only</div>
+    </section>
+  </article>
+</SiteLayout>

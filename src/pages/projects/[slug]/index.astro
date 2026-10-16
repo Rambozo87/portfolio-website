@@ -1,0 +1,43 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { loadProjects } from '../../../lib/projects';
+import { renderProjectMarkdown } from '../../../lib/markdown';
+
+export async function getStaticPaths() {
+  const projects = loadProjects();
+  return Promise.all(projects.map(async (project) => ({
+    params: { slug: project.slug },
+    props: { project, content: await renderProjectMarkdown(project) },
+  })));
+}
+
+const { project, content } = Astro.props;
+const documentAssets = project.assets.filter((asset) => asset.kind === 'document');
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const projectsUrl = `${base}projects/`;
+---
+<SiteLayout title={project.metadata.title} description={project.metadata.description} currentPath="/projects/">
+  <article class="article">
+    <p class="eyebrow">Project <span class="slash">/</span> {project.slug}</p>
+    <h1>{project.metadata.title}<span class="title-cursor" aria-hidden="true">_</span></h1>
+    <p class="article-lead">{project.metadata.description}</p>
+    <div class="project-meta" aria-label="Project metadata">
+      {project.metadata.tags.length > 0 && <span>{project.metadata.tags.join(' / ')}</span>}
+      {project.metadata.status && <span>{project.metadata.status}</span>}
+      {project.metadata.year && <span>{project.metadata.year}</span>}
+    </div>
+    <div class="prose" set:html={content} />
+    {documentAssets.length > 0 && <section class="project-assets" aria-labelledby="project-documents">
+      <h2 id="project-documents">Documentation files</h2>
+      {documentAssets.map((asset) => <a href={asset.url}>{asset.relativePath} <span aria-hidden="true">↗</span></a>)}
+    </section>}
+    <section class="source-index-section" aria-labelledby="source-files">
+      <div class="section-head"><span class="section-id">SRC</span><h2 id="source-files">Source files</h2></div>
+      <p>Approved text files are shown in a read-only, build-time browser. Project code is never executed.</p>
+      {project.sourceFiles.length > 0 ? <div class="file-index">
+        {project.sourceFiles.map((file) => <a href={file.url}>{file.relativePath} <span aria-hidden="true">↗</span></a>)}
+      </div> : <p class="notice">No approved source files are published for this project.</p>}
+    </section>
+    <p class="article-back"><a href={projectsUrl}>← Back to all projects</a></p>
+  </article>
+</SiteLayout>

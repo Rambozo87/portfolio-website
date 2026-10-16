@@ -1,0 +1,22 @@
+{
+  "name": "portfolio-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "astro": "^7.4.0",
+    "rehype-sanitize": "^6.0.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "shiki": "^3.13.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.0.0",
+    "yaml": "^2.8.1"
+  }
+}
